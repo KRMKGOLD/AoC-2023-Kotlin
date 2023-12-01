@@ -1,22 +1,9 @@
 fun main() {
     fun part1(input: List<String>): Int {
-        return input.sumOf { str ->
-            val lastIndex = str.lastIndex
-            var first: Char? = null
-            var last: Char? = null
-            var sum = 0
-
-            str.indices.forEach { idx ->
-                if (str[idx].isDigit() && first == null) first = str[idx]
-                if (str[lastIndex - idx].isDigit() && last == null) last = str[lastIndex - idx]
-
-                if (first != null && last != null) {
-                    sum = "$first$last".toInt()
-                    return@forEach
-                }
-            }
-
-            sum
+        return input.sumOf {
+            val first = it.find { it.isDigit() } ?: 0
+            val last = it.findLast { it.isDigit() } ?: 0
+            "$first$last".toInt()
         }
     }
 

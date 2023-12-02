@@ -1,4 +1,4 @@
-# AoC-2023-Kotlin
+# Advent of Code 2023 - Kotlin
 
 - https://adventofcode.com/
 

@@ -15,7 +15,8 @@ fun main() {
             val winnings = list.first()
             val nums = list.last()
 
-            val size = (winnings + nums).size - (winnings + nums).toSet().size
+            val mergeList = winnings + nums
+            val size = mergeList.size - mergeList.distinct().size
 
             sum += Math.pow(2.0, (size - 1).toDouble()).toInt()
         }
@@ -24,8 +25,6 @@ fun main() {
     }
 
     fun part2(input: List<String>): Int {
-        var sum = 0
-        // 당첨 카운트 리스트
         val winCountList = MutableList(size = input.size) { 0 }
 
         input.forEachIndexed { idx, str ->
@@ -35,10 +34,8 @@ fun main() {
             }
             val winnings = gameList.first()
             val nums = gameList.last()
-
-            val size = (winnings + nums).size - (winnings + nums).toSet().size
-
-            winCountList[idx] = size
+            val mergeList = winnings + nums
+            winCountList[idx] = mergeList.size - mergeList.distinct().size
         }
 
         val cardCountList = MutableList(size = input.size) { 1 }

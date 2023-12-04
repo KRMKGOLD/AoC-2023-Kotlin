@@ -10,15 +10,10 @@ fun main() {
         input.forEachIndexed { i, str ->
             str.forEachIndexed { j, c ->
                 if (input[i][j] != '.' && input[i][j].isDigit().not()) {
-                    val str1 = input.getOrNull(i - 1)?.sliceWithPreventException(j - 3..j + 3) ?: ""
-                    val str2 = input.getOrNull(i)?.sliceWithPreventException(j - 3..<j) ?: ""
-                    val str3 = input.getOrNull(i)?.sliceWithPreventException(j + 1..j + 3) ?: ""
-                    val str4 = input.getOrNull(i + 1)?.sliceWithPreventException(j - 3..j + 3) ?: ""
-
-                    val num1 = str1.filterNumber()
-                    val num2 = str2.substringAfter(".").toIntOrNull()
-                    val num3 = str3.substringBefore(".").toIntOrNull()
-                    val num4 = str4.filterNumber()
+                    val num1 = input.getOrNull(i - 1)?.filterNumber(j).orEmpty()
+                    val num2 = dfs(input.getOrNull(i).orEmpty(), j - 1, true).toIntOrNull()
+                    val num3 = dfs(input.getOrNull(i).orEmpty(), j + 1, false).toIntOrNull()
+                    val num4 = input.getOrNull(i + 1)?.filterNumber(j).orEmpty()
 
                     val list = num1 + listOfNotNull(num2, num3) + num4
 
@@ -35,19 +30,14 @@ fun main() {
         input.forEachIndexed { i, str ->
             str.forEachIndexed { j, c ->
                 if (input[i][j] == '*') {
-                    val str1 = input.getOrNull(i - 1)?.sliceWithPreventException(j - 3..j + 3) ?: ""
-                    val str2 = input.getOrNull(i)?.sliceWithPreventException(j - 3..<j) ?: ""
-                    val str3 = input.getOrNull(i)?.sliceWithPreventException(j + 1..j + 3) ?: ""
-                    val str4 = input.getOrNull(i + 1)?.sliceWithPreventException(j - 3..j + 3) ?: ""
-
-                    val num1 = str1.filterNumber()
-                    val num2 = str2.substringAfter(".").toIntOrNull()
-                    val num3 = str3.substringBefore(".").toIntOrNull()
-                    val num4 = str4.filterNumber()
+                    val num1 = input.getOrNull(i - 1)?.filterNumber(j).orEmpty()
+                    val num2 = dfs(input.getOrNull(i).orEmpty(), j - 1, true).toIntOrNull()
+                    val num3 = dfs(input.getOrNull(i).orEmpty(), j + 1, false).toIntOrNull()
+                    val num4 = input.getOrNull(i + 1)?.filterNumber(j).orEmpty()
 
                     val list = num1 + listOfNotNull(num2, num3) + num4
 
-                    if (list.size == 2) {
+                    if (list.size > 1) {
                         sum += list.first() * list.last()
                     }
                 }
@@ -62,26 +52,14 @@ fun main() {
     part2(input).println()
 }
 
-fun Char.checkNumber(): Boolean {
-    return this in '0'..'9'
-}
-
-fun String.sliceWithPreventException(intRange: IntRange): String? {
-    return try {
-        this.slice(intRange)
-    } catch (e: Exception) {
-        null
-    }
-}
-
-fun String.filterNumber(): List<Int> {
-    val left = dfs(this, 3, true)
-    val right = dfs(this, 3, false)
+fun String.filterNumber(idx: Int): List<Int> {
+    val left = dfs(this, idx, true)
+    val right = dfs(this, idx, false)
 
     return if (left.isEmpty() && right.isEmpty()) {
         listOf(
-            dfs(this, 2, true),
-            dfs(this, 4, false)
+            dfs(this, idx - 1, true),
+            dfs(this, idx + 1, false)
         ).mapNotNull { it.toIntOrNull() }
     } else {
         listOf(
